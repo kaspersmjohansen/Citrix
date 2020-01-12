@@ -108,7 +108,6 @@ Create-ScheduledTask -TaskName "Delete auto logon user password info" -User SYST
 # Get apps in Autologon.xml
 [xml]$Configuration = Get-Content -Path .\AutoLogon.xml
 $Apps = $Configuration.SelectNodes("//Apps/App")
-$AppsPath = $Configuration.SelectNodes("//Apps/App").Path
 $AppsExecutable = $Configuration.SelectNodes("//Apps/App").Executable
 
 # Create scheduled task for each defined in Autologon.xml
