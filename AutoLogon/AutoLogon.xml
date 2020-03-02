@@ -1,9 +1,9 @@
 <AutoLogon>
 	<Apps>
- 		<App Name="Notepad" Path="C:\Windows\system32" Executable="notepad.exe" />
-		<App Name="Wordpad" Path="%ProgramFiles%\Windows NT\Accessories" Executable="wordpad.exe" />
-		<App Name="Snipping Tool" Path="%windir%\system32" Executable="SnippingTool.exe" />
-		<App Name="Paint" Path="%windir%\system32" Executable="mspaint.exe" />
+ 		<App Name="Notepad" Path="C:\Windows\system32" Executable="notepad.exe" Argument="C:\Windows\DtcInstall.log" />
+		<App Name="Wordpad" Path="%ProgramFiles%\Windows NT\Accessories" Executable="wordpad.exe" Argument="" />
+		<App Name="Snipping Tool" Path="%windir%\system32" Executable="SnippingTool.exe" Argument="" />
+		<App Name="Paint" Path="%windir%\system32" Executable="mspaint.exe" Argument="" />
  	</Apps>
 
 </AutoLogon>

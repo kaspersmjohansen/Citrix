@@ -7,7 +7,7 @@ Company:            edgemo
 Contact:            kjo@edgemo.com
 Version:            1.0            
 Last modified by:   Kasper Johansen
-Last modified Date: 28-12-2019
+Last modified Date: 02-03-2020
 
 # Changes
 11-12-2019 - Added taskkill command, on line 113, to force Excel, Word and Outlook to forcefully close, before log off.
@@ -15,6 +15,7 @@ Last modified Date: 28-12-2019
              The job is now a part of the log off job on line 128.
              The job is implemented the make sure the auto logon user is properly logged off, 
              even when applications for some reason hangs or are waiting for input.
+02-03-2020 - Add support for executable arguments in the XML file. Look at the provided XML file for an example.
 
 ******************************************************************************************************************************************
 
@@ -77,7 +78,7 @@ function Create-ScheduledTask
             }
             else
                 {
-                    $A = New-ScheduledTaskAction –Execute $AppExecutable    
+                    $A = New-ScheduledTaskAction –Execute $AppExecutable
                 }
 
             $T = New-ScheduledTaskTrigger -AtLogon -User $LogonUser
@@ -108,14 +109,16 @@ Create-ScheduledTask -TaskName "Delete auto logon user password info" -User SYST
 # Get apps in Autologon.xml
 [xml]$Configuration = Get-Content -Path .\AutoLogon.xml
 $Apps = $Configuration.SelectNodes("//Apps/App")
+$AppsPath = $Configuration.SelectNodes("//Apps/App").Path
 $AppsExecutable = $Configuration.SelectNodes("//Apps/App").Executable
+[string]$AppExecArgument = $Configuration.SelectNodes("//Apps/App").Argument
 
 # Create scheduled task for each defined in Autologon.xml
 ForEach ($App in $Apps)
 {
     $AppPath = $App.Path
     $AppExec = $App.Executable
-    Create-ScheduledTask -TaskName $App.Name -User $Username -LogonUser $Username -AppExecutable "$AppPath\$AppExec"
+    Create-ScheduledTask -TaskName $App.Name -User $Username -LogonUser $Username -AppExecutable "$AppPath\$AppExec" -AppArgument $AppExecArgument
 }
 
 # Create scheduled task to kill processes before logoff
