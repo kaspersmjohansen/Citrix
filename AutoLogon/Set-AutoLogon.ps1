@@ -66,6 +66,7 @@ function Create-ScheduledTask
          [Parameter(Mandatory = $true)]
          [string]$AppExecutable,
          [string]$AppArgument,
+         [string]$AppWorkingDir,
          [Parameter(Mandatory = $true)]
          [string]$User,
          [Parameter(Mandatory = $true)]
@@ -76,10 +77,23 @@ function Create-ScheduledTask
             {
                 $A = New-ScheduledTaskAction –Execute $AppExecutable -Argument $AppArgument
             }
-            else
-                {
-                    $A = New-ScheduledTaskAction –Execute $AppExecutable
-                }
+            
+            If (!([string]::IsNullOrWhiteSpace($AppWorkingDir)))
+            {
+                $A = New-ScheduledTaskAction –Execute $AppExecutable -WorkingDirectory $AppWorkingDir
+            }
+
+
+            If ((!([string]::IsNullOrWhiteSpace($AppArgument)) -and (!([string]::IsNullOrWhiteSpace($AppWorkingDir)))))
+            {
+                $A = New-ScheduledTaskAction –Execute $AppExecutable -Argument $AppArgument -WorkingDirectory $AppWorkingDir    
+            }
+            
+            If (([string]::IsNullOrWhiteSpace($AppArgument)) -and ([string]::IsNullOrWhiteSpace($AppWorkingDir)))
+            {
+                $A = New-ScheduledTaskAction –Execute $AppExecutable    
+            }
+
 
             $T = New-ScheduledTaskTrigger -AtLogon -User $LogonUser
             $P = New-ScheduledTaskPrincipal -UserId $User -LogonType Interactive
@@ -104,7 +118,7 @@ Set-ItemProperty -Path $RegPath -Name "DefaultPassword" -Value "$Password" -type
 Set-ItemProperty -Path $RegPath -Name "AutoLogonCount" -Value "1" -type DWord
 
 # Create Shceduled Task to delete auto logon user password information
-Create-ScheduledTask -TaskName "Delete auto logon user password info" -User SYSTEM -LogonUser $Username -AppExecutable "%windir%\System32\reg.exe" -AppArgument "delete `"HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon`" /v DefaultPassword /f"
+Create-ScheduledTask -TaskName "Delete auto logon user password info" -User SYSTEM -LogonUser $Username -AppExecutable "%windir%\System32\reg.exe" -AppArgument "delete `"HKLM\Software\Microsoft\Windows NT\CurrentVersion\Winlogon`" /v DefaultPassword /f" -AppWorkingDir ""
 
 # Get apps in Autologon.xml
 [xml]$Configuration = Get-Content -Path .\AutoLogon.xml
@@ -112,13 +126,16 @@ $Apps = $Configuration.SelectNodes("//Apps/App")
 $AppsPath = $Configuration.SelectNodes("//Apps/App").Path
 $AppsExecutable = $Configuration.SelectNodes("//Apps/App").Executable
 [string]$AppExecArgument = $Configuration.SelectNodes("//Apps/App").Argument
+[string]$AppExecWorkingDir = $Configuration.SelectNodes("//Apps/App").WorkingDir
 
 # Create scheduled task for each defined in Autologon.xml
 ForEach ($App in $Apps)
 {
     $AppPath = $App.Path
     $AppExec = $App.Executable
-    Create-ScheduledTask -TaskName $App.Name -User $Username -LogonUser $Username -AppExecutable "$AppPath\$AppExec" -AppArgument $AppExecArgument
+    $AppArgu = $App.Argument
+    $AppWork = $App.WorkingDir
+    Create-ScheduledTask -TaskName $App.Name -User $Username -LogonUser $Username -AppExecutable "$AppPath\$AppExec" -AppArgument $AppArgu -AppWorkingDir $AppWork
 }
 
 # Create scheduled task to kill processes before logoff
@@ -127,7 +144,7 @@ ForEach ($App in $AppsExecutable)
 [array]$KillApps +=$App -replace ".exe",""
 }
 $KillApps = $KillApps -join ","
-Create-ScheduledTask -TaskName "Log off auto logon user" -User $Username -LogonUser $Username -AppExecutable "%windir%\system32\WindowsPowerShell\v1.0\powershell.exe" -AppArgument "-WindowStyle Minimized -Command `"& {Start-Sleep -S 240; Stop-Process -Name $KillApps -Force; Start-Sleep -S 60; logoff}`""
+Create-ScheduledTask -TaskName "Log off auto logon user" -User $Username -LogonUser $Username -AppExecutable "%windir%\system32\WindowsPowerShell\v1.0\powershell.exe" -AppArgument "-WindowStyle Minimized -Command `"& {Start-Sleep -S 240; Stop-Process -Name $KillApps -Force; Start-Sleep -S 60; logoff}`"" -AppWorkingDir ""
     }
 
 Set-AutoLogon $Username $Password $AutoLogonXML
