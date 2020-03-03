@@ -3,11 +3,9 @@
 **************************************************************************************************************************************
 Name:               Set-Autologon
 Author:             Kasper Johansen
-Company:            edgemo
-Contact:            kjo@edgemo.com
 Version:            1.0            
 Last modified by:   Kasper Johansen
-Last modified Date: 02-03-2020
+Last modified Date: 03-03-2020
 
 # Changes
 11-12-2019 - Added taskkill command, on line 113, to force Excel, Word and Outlook to forcefully close, before log off.
@@ -15,7 +13,8 @@ Last modified Date: 02-03-2020
              The job is now a part of the log off job on line 128.
              The job is implemented the make sure the auto logon user is properly logged off, 
              even when applications for some reason hangs or are waiting for input.
-02-03-2020 - Add support for executable arguments in the XML file. Look at the provided XML file for an example.
+02-03-2020 - Added support for executable arguments in the XML file. Look at the provided XML file for an example.
+03-03-2020 - Added support for execuatble working directory in the XML file. Look at the provided XML file for an example.
 
 ******************************************************************************************************************************************
 
@@ -93,7 +92,6 @@ function Create-ScheduledTask
             {
                 $A = New-ScheduledTaskAction –Execute $AppExecutable    
             }
-
 
             $T = New-ScheduledTaskTrigger -AtLogon -User $LogonUser
             $P = New-ScheduledTaskPrincipal -UserId $User -LogonType Interactive
