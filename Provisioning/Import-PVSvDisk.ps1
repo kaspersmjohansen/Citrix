@@ -2,13 +2,11 @@
 #Requires -RunAsAdministrator
 <#
 *********************************************************************************************************************
-Name:               Import-PVSvDiskVHD
+Name:               Import-Import-PVSvDisk
 Author:             Kasper Johansen
-Company:            edgemo
-Contact:            kjo@edgemo.com
+Version             1.0
 Last modified by:   Kasper Johansen
-Last modified Date: 14-10-2019
-Version             2.5
+Last modified Date: 10-03-2020
 
 .SYNOPSIS
     Imports one or more VHD(S) to the Provisioning Services vDisk store.
@@ -16,6 +14,7 @@ Version             2.5
 .DESCRIPTION
     This script imports VHD(S) to the Provisioning Services vDisk store. 
     
+    !!SUPPORT NOTICE!!
     The script must be executed on a working PVS server!!
     The script is NOT supported on Windows Server 2012/2012 R2 
     Certain parts of the script will fail on 2012/2012R2 due to missing PowerShell commands
@@ -24,8 +23,8 @@ Version             2.5
     should look for VHDX files.
 
     .PARAMETER BuildDir
-    Specifies the directory where the script should look for VHDX files. Any and all
-    VHDX files in this directory, will be imported and configured. The directory specied
+    Specifies the directory where the script should look for VHDX files, VHD files are not supported!.
+    All VHDX files in this directory, will be imported and configured. The directory specied
     should be the a local directory on the Provisionin Services server.
     
     .PARAMETER vDiskWriteCacheType
@@ -49,14 +48,6 @@ Version             2.5
     Acceptable values are:
     1=MAK
     2=KMS
-
-    .PARAMETER Site
-    Specifies the name of the Provisioning Services site. If not specified, the Provisioning Services server
-    is queried for the site name.
-
-    .PARAMETER Store
-    Specifies the Provisioning Services vDisk store the VHD(S) should be imported to. If not specified,
-    the Provisioning Services server is queried for the store name and the first store in the list is selected.
 
     .PARAMETER StorePath
     Specifies the Provisioning Services vDisk store path
@@ -97,11 +88,9 @@ Param(
     [string]$BuildDir,
     [ValidateSet("0","1","3","4","6","7","9")]
     [string]$vDiskWriteCacheType = "9",
-    [string]$vDiskWriteCacheSize = "2048",
+    [string]$vDiskWriteCacheSize = "4096",
     [ValidateSet("1","2")]
     [string]$vDiskLicenseMode = "2",
-    [string]$Site, 
-    [string]$Store,
     [switch]$Defrag,
     [switch]$Replicate,
     [string]$LogDir = "$env:SystemRoot\Temp"
@@ -114,9 +103,9 @@ function Defrag-VHD
          $vhd
          )
             # Mount VHD
-            Write-Host "Mounting $vhd" -Verbose
+            Write-Host "Mounting $vhd"
             Write-Host
-            Mount-DiskImage -ImagePath "$BuildDir\$vhd" -Verbose
+            Mount-DiskImage -ImagePath "$BuildDir\$vhd"
 
                 # Get mounted VHD
                 $MountedVHD = Get-Disk | where {$_.Location -eq "$BuildDir\$vhd"}
@@ -136,12 +125,12 @@ function Defrag-VHD
                             Optimize-Volume -ObjectId $VolumeObjID -Defrag
                         
                                 # Unmount VHD
-                                Write-Host "Unmounting $vhd" -Verbose
+                                Write-Host "Unmounting $vhd"
                                 Write-Host
                                 Dismount-DiskImage -ImagePath "$BuildDir\$vhd"             
      }
 
-function Import-PVSvDiskVHD ($BuildDir,$vDiskWriteCacheType,$vDiskWriteCacheSize,$vDiskLicenseMode,$Site,$Store,$Defrag,$Replicate,$LogDir)
+function Import-PVSvDisk ($BuildDir,$vDiskWriteCacheType,$vDiskWriteCacheSize,$vDiskLicenseMode,$Site,$Store,$Defrag,$Replicate,$LogDir)
     {
     # Start time measuring and transcription
     $LogPS = $LogDir + "\Import-PVSvDiskVHD.log"
@@ -149,7 +138,6 @@ function Import-PVSvDiskVHD ($BuildDir,$vDiskWriteCacheType,$vDiskWriteCacheSize
     Start-Transcript $LogPS
 
         # Import PVS PowerShell module
-        Write-Host "Importing Provisioning Services PowerShell module" -Verbose
         Import-Module “C:\Program Files\Citrix\Provisioning Services Console\Citrix.PVS.SnapIn.dll” -ErrorAction Stop
 
             # Verify that the specified $BuildDir exists
@@ -163,15 +151,12 @@ function Import-PVSvDiskVHD ($BuildDir,$vDiskWriteCacheType,$vDiskWriteCacheSize
                 Stop-Transcript
                 Break
             }
-                # Get VHDs in $BuildDir
-                Write-Host
-                Write-Host "VHDs in $BuildDir" -Verbose
-                Write-Host
-
-                $VHDs = Get-ChildItem -Path $BuildDir -Recurse -Include "*.VHD","*.VHDX" 
+                
+                # Check for VHDX files in $BuildDir
+                $VHDs = Get-ChildItem -Path $BuildDir -Recurse -Include "*.VHDX" 
                 If (($VHDs | Measure-Object).Count -eq "0")
                 {
-                    Write-Host "$BuildDir does not contain any VHD or VHDX files, aborting script!"
+                    Write-Host "$BuildDir does not contain any VHDX files, aborting script!"
                     Write-Host
                     
                     $EndDTM = (Get-Date)
@@ -181,26 +166,25 @@ function Import-PVSvDiskVHD ($BuildDir,$vDiskWriteCacheType,$vDiskWriteCacheSize
                 }
                 else
                 {
+                    # Get VHDs in $BuildDir
+                    Write-Host
+                    Write-Host "VHDXs in $BuildDir" -Verbose
+                    Write-Host
+
                     # List VHD/VHDX
                     $VHDName = $VHDs.Name
                     Write-Host "$VHDName" -ForegroundColor Green
                 }
-                        # Get Provisioning Services site name, if not specified
-                        If ([String]::IsNullOrWhiteSpace($Site))
-                        {
-                            [string]$Site = (Get-PvsSite).SiteName
-                        }
-                        Write-Host "PVS Site:$Site" -ForegroundColor Green
-                        Write-Host
-
-                            # Get the Provisioning Services store name, if not specified
-                            If ([String]::IsNullOrWhiteSpace($Store))
-                            {
-                               [string]$Store = (Get-PvsStore).StoreName
-                            }
-                            Write-Host "PVS Store:$Store" -ForegroundColor Green
-                            Write-Host
-
+                        # Get Provisioning Services site information, if not specified
+                        # Set variables
+                        [string]$Site = (Get-PvsSite).SiteName
+                        [string]$Store = (Get-PvsStore).StoreName
+                        [string]$PVSServersinSite = (Get-PvsServer).ServerFqdn
+                                                
+                        Write-Host "PVS Site: $Site" -ForegroundColor Green
+                        Write-Host "PVS Store: $Store" -ForegroundColor Green
+                        Write-Host "PVS Servers in Site: $PVSServersinSite" -ForegroundColor Green
+                        
                                 # Get the path to specified vDisk store
                                 [string]$StorePath = (Get-PvsStore | where {$_.Name -eq $Store}).Path
 
@@ -213,7 +197,7 @@ function Import-PVSvDiskVHD ($BuildDir,$vDiskWriteCacheType,$vDiskWriteCacheSize
                                         }
 
                                         # Move VHD(S) to $StorePath.
-                                        Write-Host "Moving $vhd to $StorePath - Please wait..." -Verbose
+                                        Write-Host "Moving $vhd to $StorePath" -Verbose
                                         Write-Host
 
                                             Move-Item -Path "$BuildDir\$vhd" -Destination $StorePath -Verbose
@@ -226,25 +210,30 @@ function Import-PVSvDiskVHD ($BuildDir,$vDiskWriteCacheType,$vDiskWriteCacheSize
                                                 New-PvsDiskLocator -Name $vhd -StoreName $Store -SiteName $Site -RebalanceEnabled -SubnetAffinity 1 -VHDX -NewDiskWriteCacheType $vDiskWriteCacheType
                                                 Set-PvsDisk -Name $vhd -StoreName $Store -SiteName $Site -WriteCacheSize $vDiskWriteCacheSize -LicenseMode $vDiskLicenseMode
                                     
-                                        If ($Replicate)
-                                        {
-                                            # Get $Storepath driveletter and store folder
-                                            $StoreDriveLtr = $StorePath.Substring(0,1)
-                                            $StoreFolder = $StorePath.Substring(3)
-                                            $PVSServersinSite = (Get-PvsServer -SiteId ((Get-PvsSite -Name $Site).SiteId) | where {$_.Name -ne $env:COMPUTERNAME}).ServerFqdn
-                                            ForEach ($PVSserver in $PVSServersinSite)
-                                            {
-                                                Write-Host "Copying $vhd.pvp to $PVSserver" -Verbose
-                                                Write-Host
+                                                    If ($Replicate)
+                                                    {
+                                                        # Get $Storepath driveletter and store folder
+                                                        $StoreDriveLtr = $StorePath.Substring(0,1)
+                                                        $StoreFolder = $StorePath.Substring(3)
+                                                        $PVSServerRelication = (Get-PvsServer -SiteId ((Get-PvsSite -Name $Site).SiteId) | where {$_.Name -ne $env:COMPUTERNAME}).ServerFqdn
+                                                        ForEach ($PVSserver in $PVSServerRelication)
+                                                        {
+                                                            Write-Host "Copying $vhd.vhdx and $vhd.pvp $PVSserver" -Verbose
+                                                            Write-Host
+                                                            Start-BitsTransfer -Source "$StorePath\$vhd.vhdx","$StorePath\$vhd.pvp" -Destination "\\$PVSserver\$StoreDriveLtr$\$StoreFolder\$vhd.vhdx","\\$PVSserver\$StoreDriveLtr$\$StoreFolder\$vhd.pvp"
+                                                            <#
+                                                            Write-Host "Copying $vhd.pvp to $PVSserver" -Verbose
+                                                            Write-Host
 
-                                                Copy-Item -Path "$StorePath\$vhd.pvp" -Destination "\\$PVSserver\$StoreDriveLtr$\$StoreFolder" -Verbose
+                                                            Copy-Item -Path "$StorePath\$vhd.pvp" -Destination "\\$PVSserver\$StoreDriveLtr$\$StoreFolder" -Verbose
 
-                                                Write-Host "Copying $vhd.vhdx to $PVSserver" -Verbose
-                                                Write-Host
+                                                            Write-Host "Copying $vhd.vhdx to $PVSserver" -Verbose
+                                                            Write-Host
 
-                                                Copy-Item -Path "$StorePath\$vhd.vhdx" -Destination "\\$PVSserver\$StoreDriveLtr$\$StoreFolder" -Verbose
-                                            }
-                                        }
+                                                            Copy-Item -Path "$StorePath\$vhd.pvp" -Destination "\\$PVSserver\$StoreDriveLtr$\$StoreFolder" -Verbose
+                                                            #>
+                                                        }   
+                                                    }
                                     }
 
         # End time measuring and transcription
@@ -253,4 +242,4 @@ function Import-PVSvDiskVHD ($BuildDir,$vDiskWriteCacheType,$vDiskWriteCacheSize
         Stop-Transcript
     }
 
-Import-PVSvDiskVHD $BuildDir $vDiskWriteCacheType $vDiskWriteCacheSize $vDiskLicenseMode $Site $Store $Defrag $Replicate $LogDir
+Import-PVSvDisk $BuildDir $vDiskWriteCacheType $vDiskWriteCacheSize $vDiskLicenseMode $Site $Store $Defrag $Replicate $LogDir
