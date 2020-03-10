@@ -3,8 +3,6 @@
 *********************************************************************************************************************************
 Name:               Migrate-XAapps
 Author:             Kasper Johansen
-Company:            edgemo
-Contact:            kjo@edgemo.com
 Last modified by:   Kasper Johansen
 Last modified Date: 16-11-2019
 Version             1.0

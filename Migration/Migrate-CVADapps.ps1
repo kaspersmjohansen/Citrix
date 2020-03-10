@@ -3,8 +3,6 @@
 *********************************************************************************************************************************
 Name:               Migrate-CVADapps
 Author:             Kasper Johansen
-Company:            edgemo
-Contact:            kjo@edgemo.com
 Last modified by:   Kasper Johansen
 Last modified Date: 12-01-2020
 Version             2.0
