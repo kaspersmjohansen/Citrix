@@ -255,38 +255,38 @@ function Import-XAapps
                     # Create icons
                     $IconID = New-BrokerIcon -EncodedIconData $IconData.EncodedIconData
 
-                        If (Get-BrokerApplication | Where { $_.Name -eq $AppName })
+                        If (Get-BrokerApplication | Where { $_.Name -eq $AppApplicationName })
                         {
-                            Write-Host "$AppName already exists!" -Verbose
+                            Write-Host "$AppApplicationName already exists!" -Verbose
                             Write-Host
                         }
                         else
                         {
-                            Write-Host "Importing $AppName" -Verbose
-                            Write-Host "Importing icon for $AppName" -Verbose
+                            Write-Host "Importing $AppApplicationName" -Verbose
+                            Write-Host "Importing icon for $AppApplicationName" -Verbose
 
-                            New-BrokerApplication -Name $AppName -ApplicationType $AppApplicationType -AdminFolder $AppAdminFolder -ClientFolder $AppClientFolder -CommandLineArguments $AppCommandLineArguments -CommandLineExecutable $AppCommandLineExecutable -CpuPriorityLevel $AppCpuPriorityLevel -Description $AppDescription -DesktopGroup $DesktopGroup -Enabled $AppEnabled -IconUid $IconID.UID -Priority 0 -PublishedName $AppPublishedName -SecureCmdLineArgumentsEnabled $AppSecureCmdLineArgumentsEnabled -StartMenuFolder $AppStartMenuFolder -ShortcutAddedToDesktop $AppShortcutAddedToDesktop -ShortcutAddedToStartMenu $AppShortcutAddedToStartMenu -UserFilterEnabled $False -Visible $AppVisible -WaitForPrinterCreation $AppWaitForPrinterCreation -WorkingDirectory $AppWorkingDirectory -Verbose
+                            New-BrokerApplication -Name $AppApplicationName -ApplicationType $AppApplicationType -AdminFolder $AppAdminFolder -ClientFolder $AppClientFolder -CommandLineArguments $AppCommandLineArguments -CommandLineExecutable $AppCommandLineExecutable -CpuPriorityLevel $AppCpuPriorityLevel -Description $AppDescription -DesktopGroup $DesktopGroup -Enabled $AppEnabled -IconUid $IconID.UID -Priority 0 -PublishedName $AppPublishedName -SecureCmdLineArgumentsEnabled $AppSecureCmdLineArgumentsEnabled -StartMenuFolder $AppStartMenuFolder -ShortcutAddedToDesktop $AppShortcutAddedToDesktop -ShortcutAddedToStartMenu $AppShortcutAddedToStartMenu -UserFilterEnabled $False -Visible $AppVisible -WaitForPrinterCreation $AppWaitForPrinterCreation -WorkingDirectory $AppWorkingDirectory -Verbose
                             
                             If ($AppUserFilterEnabled -eq "True")
                             {
-                                Set-BrokerApplication -Name $AppName -UserFilterEnabled $True -Enable $False -Verbose
-                                Add-BrokerApplication -Name $AppName -DesktopGroup $DesktopGroup -Verbose
+                                Set-BrokerApplication -Name $AppApplicationName -UserFilterEnabled $True -Enable $False -Verbose
+                                Add-BrokerApplication -Name $AppApplicationName -DesktopGroup $DesktopGroup -Verbose
                                                                     
                                     $UserAccess | ForEach-Object {
-                                    Write-Host "Importing user/group access for $AppName" -Verbose
+                                    Write-Host "Importing user/group access for $AppApplicationName" -Verbose
                                     Write-Host "Configuring AD Group/user:" $_.Username -Verbose
                                     Write-Host
 
                                         ForEach ($user in $_.Username)
                                         {
-                                            Add-BrokerUser -Name $user -Application $AppName -Verbose -ErrorAction SilentlyContinue
+                                            Add-BrokerUser -Name $user -Application $AppApplicationName -Verbose -ErrorAction SilentlyContinue
                                         }
                                     }
                             }
                             else
                             {
-                                Set-BrokerApplication -Name $AppName -UserFilterEnabled $False -Enable $False -Verbose
-                                Add-BrokerApplication -Name $AppName -DesktopGroup $DesktopGroup -Verbose
+                                Set-BrokerApplication -Name $AppApplicationName -UserFilterEnabled $False -Enable $False -Verbose
+                                Add-BrokerApplication -Name $AppApplicationName -DesktopGroup $DesktopGroup -Verbose
                             }
 
                         }                
