@@ -8,7 +8,7 @@
     <description>Should be run after the Windows template provided by Citrix. This template provides additional optimizations to the operating system</description>
     <category>OS Optimizations</category>
     <author>Kasper Johansen, edgemo - kjo@edgemo.com</author>
-    <lastupdatedate>2-16-2020</lastupdatedate>
+    <lastupdatedate>9-20-2020</lastupdatedate>
     <rollback_not_supported />
   </metadata>
   <group>
@@ -146,6 +146,23 @@ The service it not used, unless you are managing Windows devices via Citrix Endp
           <name>WemLogonSvc</name>
           <value>Disabled</value>
         </params>
+      </action>
+      <analyze_not_supported />
+      <rollback_not_supported />
+    </entry>
+    <entry>
+      <name>Citrix WEM Agent Host Service</name>
+      <description>Stop the Citrix WEM Agent Host Service and clear the local WEM agent cache.
+
+Does not support rollback!</description>
+      <execute>0</execute>
+      <action>
+        <plugin>PowerShell</plugin>
+        <executeparams>
+          <value>Stop-Service -Name WemAgentSvc -Force
+
+Remove-Item -Path "${env:ProgramFiles(x86)}\Citrix\Workspace Environment Management Agent\Local Databases\*.*"</value>
+        </executeparams>
       </action>
       <analyze_not_supported />
       <rollback_not_supported />

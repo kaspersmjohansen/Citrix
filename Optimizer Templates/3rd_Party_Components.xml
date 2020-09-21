@@ -8,7 +8,7 @@
     <description>Disables 3rd party components (scheduled tasks and services) added by Adobe and Google</description>
     <category>OS Optimizations</category>
     <author>John Billekens</author>
-    <lastupdatedate>7-03-2020</lastupdatedate>
+    <lastupdatedate>9-06-2020</lastupdatedate>
   </metadata>
   <group>
     <id>Adobe</id>
@@ -151,7 +151,7 @@
     <displayname>Google</displayname>
     <description>Configures Google items</description>
     <entry>
-      <name>GoogleUpdateTaskMachineUA Task</name>
+      <name>GoogleUpdateTaskMachineUA</name>
       <description>Google Automatic Update Service</description>
       <execute>1</execute>
       <action>
@@ -164,7 +164,7 @@
       </action>
     </entry>
     <entry>
-      <name>GoogleUpdateTaskMachineCore Task</name>
+      <name>GoogleUpdateTaskMachineCore</name>
       <description>Google Automatic Update Core</description>
       <execute>1</execute>
       <action>
