@@ -2,11 +2,11 @@
 #Requires -RunAsAdministrator
 <#
 *********************************************************************************************************************
-Name:               Import-Import-PVSvDisk
+Name:               Import-PVSvDisk
 Author:             Kasper Johansen
 Version             1.0
 Last modified by:   Kasper Johansen
-Last modified Date: 10-03-2020
+Last modified Date: 24-09-2020
 
 .SYNOPSIS
     Imports one or more VHD(S) to the Provisioning Services vDisk store.
