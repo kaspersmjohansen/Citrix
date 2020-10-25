@@ -4,9 +4,9 @@
 *********************************************************************************************************************
 Name:               Import-PVSvDisk
 Author:             Kasper Johansen
-Version             1.0
+Website:            https://virtualwarlock.net
 Last modified by:   Kasper Johansen
-Last modified Date: 24-09-2020
+Last modified Date: 24-10-2020
 
 .SYNOPSIS
     Imports one or more VHD(S) to the Provisioning Services vDisk store.
@@ -173,7 +173,7 @@ function Import-PVSvDisk ($BuildDir,$vDiskWriteCacheType,$vDiskWriteCacheSize,$v
 
                     # List VHD/VHDX
                     $VHDName = $VHDs.Name
-                    Write-Host "$VHDName" -ForegroundColor Green
+                    Write-Host "$VHDName" -ForegroundColor Cyan
                 }
                         # Get Provisioning Services site information, if not specified
                         # Set variables
@@ -181,9 +181,9 @@ function Import-PVSvDisk ($BuildDir,$vDiskWriteCacheType,$vDiskWriteCacheSize,$v
                         [string]$Store = (Get-PvsStore).StoreName
                         [string]$PVSServersinSite = (Get-PvsServer).ServerFqdn
                                                 
-                        Write-Host "PVS Site: $Site" -ForegroundColor Green
-                        Write-Host "PVS Store: $Store" -ForegroundColor Green
-                        Write-Host "PVS Servers in Site: $PVSServersinSite" -ForegroundColor Green
+                        Write-Host "PVS Site: $Site" -ForegroundColor Cyan
+                        Write-Host "PVS Store: $Store" -ForegroundColor Cyan
+                        Write-Host "PVS Servers in Site: $PVSServersinSite" -ForegroundColor Cyan
                         
                                 # Get the path to specified vDisk store
                                 [string]$StorePath = (Get-PvsStore | where {$_.Name -eq $Store}).Path
@@ -221,17 +221,6 @@ function Import-PVSvDisk ($BuildDir,$vDiskWriteCacheType,$vDiskWriteCacheSize,$v
                                                             Write-Host "Copying $vhd.vhdx and $vhd.pvp $PVSserver" -Verbose
                                                             Write-Host
                                                             Start-BitsTransfer -Source "$StorePath\$vhd.vhdx","$StorePath\$vhd.pvp" -Destination "\\$PVSserver\$StoreDriveLtr$\$StoreFolder\$vhd.vhdx","\\$PVSserver\$StoreDriveLtr$\$StoreFolder\$vhd.pvp"
-                                                            <#
-                                                            Write-Host "Copying $vhd.pvp to $PVSserver" -Verbose
-                                                            Write-Host
-
-                                                            Copy-Item -Path "$StorePath\$vhd.pvp" -Destination "\\$PVSserver\$StoreDriveLtr$\$StoreFolder" -Verbose
-
-                                                            Write-Host "Copying $vhd.vhdx to $PVSserver" -Verbose
-                                                            Write-Host
-
-                                                            Copy-Item -Path "$StorePath\$vhd.pvp" -Destination "\\$PVSserver\$StoreDriveLtr$\$StoreFolder" -Verbose
-                                                            #>
                                                         }   
                                                     }
                                     }
