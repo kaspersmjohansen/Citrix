@@ -8,7 +8,7 @@
     <description>Should be run after the Windows template provided by Citrix. This template provides additional optimizations to the operating system</description>
     <category>OS Optimizations</category>
     <author>Kasper Johansen, edgemo - kjo@edgemo.com</author>
-    <lastupdatedate>9-20-2020</lastupdatedate>
+    <lastupdatedate>10-31-2020</lastupdatedate>
     <rollback_not_supported />
   </metadata>
   <group>
@@ -310,7 +310,7 @@ Disable this task if Golden Image is deployed via Citrix MCS</description>
       <action>
         <plugin>PowerShell</plugin>
         <executeparams>
-          <value>Start-Process -Wait "C:\Program Files (x86)\Microsoft Office\Office15\OSPPREARM.EXE" -NoNewWindows</value>
+          <value>Start-Process -Wait "C:\Program Files (x86)\Microsoft Office\Office15\OSPPREARM.EXE" -NoNewWindow</value>
         </executeparams>
       </action>
       <analyze_not_supported />
@@ -323,7 +323,7 @@ Disable this task if Golden Image is deployed via Citrix MCS</description>
       <action>
         <plugin>PowerShell</plugin>
         <executeparams>
-          <value>Start-Process -Wait "C:\Program Files\Microsoft Office\Office15\OSPPREARM.EXE" -NoNewWindows</value>
+          <value>Start-Process -Wait "C:\Program Files\Microsoft Office\Office15\OSPPREARM.EXE" -NoNewWindow</value>
         </executeparams>
       </action>
       <analyze_not_supported />
@@ -336,7 +336,7 @@ Disable this task if Golden Image is deployed via Citrix MCS</description>
       <action>
         <plugin>PowerShell</plugin>
         <executeparams>
-          <value>Start-Process -Wait "C:\Program Files (x86)\Microsoft Office\Office16\OSPPREARM.EXE" -NoNewWindows</value>
+          <value>Start-Process -Wait "C:\Program Files (x86)\Microsoft Office\Office16\OSPPREARM.EXE" -NoNewWindow</value>
         </executeparams>
       </action>
       <analyze_not_supported />
@@ -349,7 +349,7 @@ Disable this task if Golden Image is deployed via Citrix MCS</description>
       <action>
         <plugin>PowerShell</plugin>
         <executeparams>
-          <value>Start-Process -Wait "C:\Program Files\Microsoft Office\Office16\OSPPREARM.EXE" -NoNewWindows</value>
+          <value>Start-Process -Wait "C:\Program Files\Microsoft Office\Office16\OSPPREARM.EXE" -NoNewWindow</value>
         </executeparams>
       </action>
       <analyze_not_supported />
@@ -362,7 +362,7 @@ Disable this task if Golden Image is deployed via Citrix MCS</description>
       <action>
         <plugin>PowerShell</plugin>
         <executeparams>
-          <value>Start-Process -Wait "C:\Program Files (x86)\Microsoft Office\Office16\OSPPREARM.EXE" -NoNewWindows</value>
+          <value>Start-Process -Wait "C:\Program Files (x86)\Microsoft Office\Office16\OSPPREARM.EXE" -NoNewWindow</value>
         </executeparams>
       </action>
       <analyze_not_supported />
@@ -375,7 +375,7 @@ Disable this task if Golden Image is deployed via Citrix MCS</description>
       <action>
         <plugin>PowerShell</plugin>
         <executeparams>
-          <value>Start-Process -Wait "C:\Program Files\Microsoft Office\Office16\OSPPREARM.EXE" -NoNewWindows</value>
+          <value>Start-Process -Wait "C:\Program Files\Microsoft Office\Office16\OSPPREARM.EXE" -NoNewWindow</value>
         </executeparams>
       </action>
       <analyze_not_supported />

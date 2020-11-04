@@ -8,7 +8,7 @@
     <description>Disables 3rd party components (scheduled tasks and services) added by Adobe and Google</description>
     <category>OS Optimizations</category>
     <author>John Billekens</author>
-    <lastupdatedate>9-06-2020</lastupdatedate>
+    <lastupdatedate>10-22-2020</lastupdatedate>
   </metadata>
   <group>
     <id>Adobe</id>
@@ -344,6 +344,19 @@
         <plugin>SchTasks</plugin>
         <params>
           <name>MicrosoftEdgeUpdateTaskMachineUA</name>
+          <path>\</path>
+          <value>Disabled</value>
+        </params>
+      </action>
+    </entry>
+    <entry>
+      <name>MicrosoftEdgeUpdateBrowserReplacementTask</name>
+      <description>MicrosoftEdgeUpdateBrowserReplacementTask</description>
+      <execute>1</execute>
+      <action>
+        <plugin>SchTasks</plugin>
+        <params>
+          <name>MicrosoftEdgeUpdateBrowserReplacementTask</name>
           <path>\</path>
           <value>Disabled</value>
         </params>
