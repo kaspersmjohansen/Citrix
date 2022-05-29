@@ -46,11 +46,11 @@ Website:            https://virtualwarlock.net
 #>
 
 # Citrix hosting connection variables
-$HostConnectionName = "SCVMM"
-$HostConnectionType = "SCVMM" # SCVMM, XenServer, VCenter
-$HostConnectionAddress = "srvvmm01.johansen.local" # Multiple values separated by comma
-$HostConnectionUserName = "johansen\scvmmadmin"
-$HostConnectionPassword = "Cyk3lskur"
+$HostConnectionName = ""
+$HostConnectionType = ""
+$HostConnectionAddress = ""
+$HostConnectionUserName = ""
+$HostConnectionPassword = ""
 
 # Add the Citrix hosting admin snap-in
 Add-PSSnapin Citrix.Host.Admin.V2
