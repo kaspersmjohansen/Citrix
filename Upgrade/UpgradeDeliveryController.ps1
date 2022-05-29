@@ -1,4 +1,4 @@
-﻿$Path = "\\johansen.local\public\Work\Software\Citrix"
+﻿$Path = ""
 $Product = "Citrix Virtual Apps and Desktops"
 $Version = "2203"
 
