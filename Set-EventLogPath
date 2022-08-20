@@ -1,3 +1,16 @@
+#Requires -RunAsAdministrator
+<#
+*************************************************************************************************
+Name:               Set-EventLogPath
+Author:             Kasper Johansen
+Website:            https://virtualwarlock.net            
+
+*************************************************************************************************
+.DESCRIPTION
+    This script changes the log path for all event logs in Windows
+*************************************************************************************************
+#>
+
 # New logs folder
 $EventLogFolder = "C:\temp"
 
