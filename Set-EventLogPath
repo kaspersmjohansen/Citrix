@@ -1,0 +1,23 @@
+# New logs folder
+$EventLogFolder = "C:\temp"
+
+# Create new log folder if it does not exist
+If (!(Test-Path -Path $EventLogFolder))
+{
+    New-Item -Path $EventLogFolder -ItemType Directory
+}
+
+# Enumerate all event log names
+$EventLogs = wevtutil enum-logs
+
+# Change log folder for all logs
+ForEach ($EventLog in $EventLogs)
+{
+Write-Host "Changing event log path for $EventLog"
+
+# Some logs has a / in the event log filename, this is an illegal character and is therefore replaces with %4
+$EventLogFile = $EventLog -replace "/","%4"
+
+# Use wevutil to change the log path
+Start-Process -wait "$env:windir\System32\wevtutil.exe" -Argumentlist "sl `"$EventLog`" /lfn:`"$EventLogFolder\$EventLogFile.evtx`"" -NoNewWindow
+}
