@@ -1,0 +1,4 @@
+Add-PSSnapin citrix.*
+set-alias qfarm Qfarm-Load
+function Qfarm-Load {Get-BrokerMachine -SessionSupport MultiSession -Property dnsName,loadIndex,SessionCount}
+Qfarm-Load 

@@ -1,0 +1,9 @@
+Add-PSSnapIn Citrix.*
+Get-Command –Module Citrix.Common.Commands
+Get-CtxTraceProvider
+$allProviders = Get-CtxTraceProvider
+Start-CtxTraceSession –TraceProviders $allProviders
+
+Stop-CtxTraceSession
+Clear-CtxTraceSession
+Get-CtxTraceSession

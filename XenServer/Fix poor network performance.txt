@@ -1,0 +1,18 @@
+[sourcecode language="plain"]
+echo Setting checksum off on VIFs
+VIFLIST=`xe vif-list | grep "uuid ( RO) " | awk '{print $5}'`
+for VIF in $VIFLIST
+do
+echo Setting ethtool-tx=off and ethtool-rx=off on $VIF
+xe vif-param-set uuid=$VIF other-config:ethtool-tx="off"
+xe vif-param-set uuid=$VIF other-config:ethtool-rx="off"
+done
+echo Setting checksum off on PIFs
+PIFLIST=`xe pif-list | grep "uuid ( RO) " | awk '{print $5}'`
+for PIF in $PIFLIST
+do
+echo Setting ethtool-tx=off and ethtool-rx=off on $PIF
+xe pif-param-set uuid=$PIF other-config:ethtool-tx="off"
+xe pif-param-set uuid=$PIF other-config:ethtool-rx="off"
+done
+[/sourcecode]
